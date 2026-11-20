@@ -67,9 +67,29 @@ const deletarReceita = async (req, res) => {
 const buscarReceitas = async (req, res) => {
   const receitaNome = req.query.nome;
 
-  const buscarReceitaNome = await buscarReceita(receitaNome);
+  if (!receitaNome) {
+    //verifica se variavel esta vazia
+    return res.status(400).json({ message: "nome da receita é obrigatório" });
+  }
 
-  res.json(buscarReceitaNome);
+  let buscarReceitaNome;
+
+  try {
+    buscarReceitaNome = await buscarReceita(receitaNome);
+  } catch (error) {
+    return res
+      .status(500)
+      .json({
+        message: "ocorreu uma falha inesperada, tente novamente mais tarde!",
+      });
+  }
+
+  if (buscarReceitaNome === null) {
+    //verifica se algo foi encontrado
+    return res.status(404).json({ message: "nenhuma receita foi encontrada" });
+  }
+
+  res.status(200).json(buscarReceitaNome);
 };
 
 export {
