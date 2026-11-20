@@ -1,11 +1,19 @@
 import express from "express";
-import { listarReceitas, criarReceita, atualizarReceita, deletarReceita } from "../controllers/receitas.controller.js"
+import {
+  listarReceitas,
+  criarReceita,
+  atualizarReceita,
+  deletarReceita,
+  buscarReceitas,
+} from "../controllers/receitas.controller.js";
 
 const router = express.Router();
 
+// Listar - esta indo até o controllers
+router.get("/", listarReceitas);
 
-// Visualizar - esta indo até o controllers
-router.get("/", listarReceitas)
+// Buscar - esta indo até o controllers
+router.get("/buscar", buscarReceitas);
 
 // Criar - esta indo até o controllers
 router.post("/", criarReceita);
