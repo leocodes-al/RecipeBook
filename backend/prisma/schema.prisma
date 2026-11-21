@@ -17,3 +17,12 @@ model Receita {
   id   String @id @default(auto()) @map("_id") @db.ObjectId
   nome String @unique
 }
+
+model Favorita {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  mealId    String @unique
+  nome      String
+  categoria String
+  origem    String
+  imagem    String
+}
