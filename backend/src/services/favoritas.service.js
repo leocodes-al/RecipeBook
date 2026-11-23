@@ -1,21 +1,35 @@
 import prisma from "../lib/prisma.js";
 
-const criarFavorita = async (dadosReceita) => {
+// criar
+const criar = async (dadosReceita) => {
   return await prisma.favorita.create({
     data: dadosReceita,
   });
 };
 
-const listarFavoritas = async () => {
+// listar
+const listar = async () => {
   return await prisma.favorita.findMany();
 };
 
-const deletarFavorita = async (id) => {
-  return await prisma.favorita.delete({
-    where: {
-      id: id,
-    },
-  });
+// deletar
+const deletar = async (id) => {
+  try {
+    return await prisma.favorita.delete({
+      where: {
+        id: id,
+      },
+    });
+  } catch (error) {
+    if (error.code === "P2025") {
+      return null;
+    }
+    if (error.code === "P2023") {
+      return "ID_INVALIDO";
+    }
+
+    throw error;
+  }
 };
 
-export { criarFavorita, listarFavoritas, deletarFavorita };
+export { criar, listar, deletar };
