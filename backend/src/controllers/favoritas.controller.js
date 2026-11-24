@@ -16,52 +16,27 @@ const listarReceitaFavorita = async (req, res) => {
 const criarReceitaFavorita = async (req, res) => {
   const receitaFavorita = req.body;
 
-  // verificação do campo nome sendo realizada no arquivo utils
-  const erroNome = validarCampo(receitaFavorita.nome, "nome");
+  const campos = ["nome", "mealId", "categoria", "origem", "imagem"];
 
-  if (erroNome !== null) {
-    return res.status(400).json({
-      message: erroNome,
-    });
-  }
+  for (const campo of campos) {
+    const erro = validarCampo(receitaFavorita[campo], campo);
 
-  // verificação mealId sendo realizada no arquivo utils
-  const erroMealId = validarCampo(receitaFavorita.mealId, "mealId");
-
-  if (erroMealId !== null) {
-    return res.status(400).json({
-      message: erroMealId,
-    });
-  }
-
-  // verificação da categoria sendo realizada no arquivo utils
-  const erroCategoria = validarCampo(receitaFavorita.categoria, "categoria");
-
-  if (erroCategoria !== null) {
-    return res.status(400).json({
-      message: erroCategoria,
-    });
-  }
-
-  // verificação de origem sendo realizada no arquivo utils
-  const erroOrigem = validarCampo(receitaFavorita.origem, "origem");
-
-  if (erroOrigem !== null) {
-    return res.status(400).json({
-      message: erroOrigem,
-    });
-  }
-
-  // Verificação da imagem sendo realizada no arquivo utils
-  const erroImagem = validarCampo(receitaFavorita.imagem, "imagem");
-
-  if (erroImagem !== null) {
-    return res.status(400).json({
-      message: erroImagem,
-    });
+    if (erro !== null) {
+      return res.status(400).json({
+        message: erro,
+      });
+    }
+    receitaFavorita[campo] = receitaFavorita[campo].trim();
   }
 
   const favoritaCriada = await criar(receitaFavorita);
+
+  if (favoritaCriada === "RECEITA_DUPLICADA") {
+    return res
+      .status(409)
+      .json({ message: "Essa receita já está nos favoritos!" });
+  }
+
   res.status(201).json({
     message: "receita favorita criada!",
     favorita: favoritaCriada,

@@ -2,9 +2,16 @@ import prisma from "../lib/prisma.js";
 
 // criar
 const criar = async (dadosReceita) => {
-  return await prisma.favorita.create({
-    data: dadosReceita,
-  });
+  try {
+    return await prisma.favorita.create({
+      data: dadosReceita,
+    });
+  } catch (error) {
+    if (error.code === "P2002") {
+      return "RECEITA_DUPLICADA";
+    }
+    throw error;
+  }
 };
 
 // listar
